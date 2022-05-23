@@ -49,5 +49,10 @@ $ python ./checkin.py CONFIRMATION_NUMBER FIRST_NAME LAST_NAME
 #### Usage
 
 ```bash
-$ sudo docker run -it pyro2927/southwestcheckin:latest CONFIRMATION_NUMBER FIRST_NAME LAST_NAME
+$ sudo docker run -it frankhsu/southwestcheckin:latest CONFIRMATION_NUMBER FIRST_NAME LAST_NAME
 ```
+
+#### update headers.txt
+from the network console found in the request to /review
+when attempting to check in
+i.e. https://www.southwest.com/air/check-in/review.html?hash=c1faf1f2-7233-403d-a9de-620d54be0820&searchToken=M2dNFOzwvino9s7HerGCzUVT3l3U1f-wqqeE2gidh3LghCHghMXEB6aj5B6R6lnFrg9sXPaiF40ZfBv-2hYOON8hgk4HwhhKEBHyFWQaRTslSmbDXJZ2zsHkP4dsS05-154fTLfjTwPVUAg%3D

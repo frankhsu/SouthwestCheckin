@@ -24,10 +24,11 @@ import sys
 import time
 
 CHECKIN_EARLY_SECONDS = 5
+NUM_THREADS = 1
 
 
 def schedule_checkin(flight_time, reservation):
-    checkin_time = flight_time - timedelta(days=1)
+    checkin_time = flight_time - timedelta(days=1) - timedelta(seconds=CHECKIN_EARLY_SECONDS)
     current_time = datetime.utcnow().replace(tzinfo=utc)
     # check to see if we need to sleep until 24 hours before flight
     if checkin_time > current_time:
@@ -69,6 +70,7 @@ def auto_checkin(reservation_number, first_name, last_name, verbose=False):
             # found a flight for checkin!
             print("Flight information found, departing {} at {}".format(airport, date.strftime('%b %d %I:%M%p')))
             # Checkin with a thread
+
             t = Thread(target=schedule_checkin, args=(date, r))
             t.daemon = True
             t.start()

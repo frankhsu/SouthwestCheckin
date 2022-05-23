@@ -6,7 +6,7 @@ import uuid
 
 BASE_URL = 'https://mobile.southwest.com/api/'
 CHECKIN_INTERVAL_SECONDS = 0.25
-MAX_ATTEMPTS = 40
+MAX_ATTEMPTS = 50
 
 
 class Reservation():
@@ -21,7 +21,7 @@ class Reservation():
     def generate_headers():
         config_js = requests.get('https://mobile.southwest.com/js/config.js')
         if config_js.status_code == requests.codes.ok:
-            modded = config_js.text[config_js.text.index("API_KEY"):]
+            modded = config_js.text[config_js.text.index("IOS_API_KEY"):]
             API_KEY = modded[modded.index(':') + 1:modded.index(',')].strip('"')
         else:
             print("Couldn't get API_KEY")
@@ -29,7 +29,18 @@ class Reservation():
 
         USER_EXPERIENCE_KEY = str(uuid.uuid1()).upper()
         # Pulled from proxying the Southwest iOS App
-        return {'Host': 'mobile.southwest.com', 'Content-Type': 'application/json', 'X-API-Key': API_KEY, 'X-User-Experience-Id': USER_EXPERIENCE_KEY, 'Accept': '*/*', 'X-Channel-ID': 'MWEB'}
+        headers = {'Host': 'mobile.southwest.com', 'Content-Type': 'application/json', 'X-API-Key': API_KEY, 'X-User-Experience-Id': USER_EXPERIENCE_KEY, 'Accept': '*/*', 'X-Channel-ID': 'MWEB', 'User-Agent': '.'}
+
+        headers_file = open('headers.txt', 'r')
+        lines = headers_file.readlines()
+        for line in lines:
+            if ': ' in line:
+                (name, value) = line.strip().split(': ')
+                name = name.lower()
+                if 'ee30zvqlwf' in name:
+                    headers[name] = value
+
+        return headers
 
     # You might ask yourself, "Why the hell does this exist?"
     # Basically, there sometimes appears a "hiccup" in Southwest where things
@@ -87,4 +98,5 @@ class Reservation():
         url = "{}mobile-air-operations{}".format(BASE_URL, info_needed['href'])
         print("Attempting check-in...")
         confirmation = self.load_json_page(url, info_needed['body'])
+        print(confirmation)
         return confirmation
